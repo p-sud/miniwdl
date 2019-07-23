@@ -2,9 +2,20 @@ language: cpp
 sudo: yes
 dist: trusty
 
+os:
+  - linux
+  - osx
+
 script:
   # Build and run unit tests
   - |
       set -ex -o pipefail
-      make docker
-      docker run --env TRAVIS_JOB_ID=${TRAVIS_JOB_ID} --env TRAVIS_BRANCH=${TRAVIS_BRANCH} -v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp miniwdl bash -c "make sopretty && make && coveralls && make doc"
+      if [ "$TRAVIS_OS_NAME" != "osx" ]; then
+        make docker
+        docker run --env TRAVIS_JOB_ID=${TRAVIS_JOB_ID} --env TRAVIS_BRANCH=${TRAVIS_BRANCH} -v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp miniwdl bash -c "make sopretty && make && coveralls && make doc"
+      else
+        brew install docker
+        pip3 install -r requirements.txt
+        pip3 install -r requirements.dev.txt
+        python3 -m WDL run_self_test
+      fi
