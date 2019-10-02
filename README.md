@@ -81,11 +81,11 @@ If you haven't installed the PyPI package to get the `miniwdl` entry point, equi
 
 ### `miniwdl run`
 
-miniwdl can run a parallelized workflow on the local host, provided that [Docker is installed](https://docs.docker.com/install/) and the invoking user has [permission to control it](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user). (miniwdl uses the built-in [Docker Swarm](https://docs.docker.com/engine/swarm/) mode, which it'll activate if not already.)
+miniwdl can run a parallelized workflow on the local host, provided that [Docker is installed](https://docs.docker.com/install/) and the invoking user has [permission to control it](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user). (miniwdl uses the built-in [Docker Swarm](https://docs.docker.com/engine/swarm/) mode, which it'll enable locally if it isn't already.)
 
-* Start with `miniwdl run_self_test` to quickly test the installation.
+* Start with `miniwdl run_self_test` for a quick viability check.
 
-By analyzing the WDL file, the runner can receive workflow inputs via the command-line, as illustrated in this example.
+By analyzing the WDL file, the runner can receive workflow inputs via the command line, as illustrated:
 
 ```
 $ cat << 'EOF' > hello.wdl
@@ -126,11 +126,11 @@ $ miniwdl run hello.wdl who=Alyssa "who=Ben Bitdiddle" x=41
 }
 ```
 
-Furthermore, the runner can provide shell tab-completion for the workflow's available inputs. To use this, enable [argcomplete](https://argcomplete.readthedocs.io/en/latest/) global completion by invoking `activate-global-python-argcomplete` and starting a new shell session. Then, start a command line `miniwdl run hello.wdl ` and try double-tab.
+Relative or absolute paths are accepted for File inputs. The runner can also provide shell tab-completion for the workflow's available inputs. To use this, enable [argcomplete](https://argcomplete.readthedocs.io/en/latest/) global completion by invoking `activate-global-python-argcomplete` and starting a new shell session. Then, start a command line `miniwdl run hello.wdl ` and try double-tab.
 
 Lastly, inputs can be supplied through a Cromwell-style JSON file; see `miniwdl run --help` for this and other options.
 
-The miniwdl runner is in early testing, and the [Releases](https://github.com/chanzuckerberg/miniwdl/releases) page documents certain existing limitations. If you encounter a WDL 1.0 interoperability problem not mentioned there, please file it via [Issues](https://github.com/chanzuckerberg/miniwdl/issues).
+The miniwdl runner is still in testing, and the [Releases](https://github.com/chanzuckerberg/miniwdl/releases) page documents certain existing limitations. If you encounter a WDL 1.0 interoperability problem not mentioned there, please file it via [Issues](https://github.com/chanzuckerberg/miniwdl/issues).
 
 ### `miniwdl cromwell`
 
