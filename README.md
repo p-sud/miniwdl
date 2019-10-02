@@ -130,7 +130,7 @@ Relative or absolute paths are accepted for File inputs. The runner can also pro
 
 Lastly, inputs can be supplied through a Cromwell-style JSON file; see `miniwdl run --help` for this and other options.
 
-The miniwdl runner is still in testing, and the [Releases](https://github.com/chanzuckerberg/miniwdl/releases) page documents certain existing limitations. If you encounter a WDL 1.0 interoperability problem not mentioned there, please file it via [Issues](https://github.com/chanzuckerberg/miniwdl/issues).
+The miniwdl runner is still in beta testing, and the [Releases](https://github.com/chanzuckerberg/miniwdl/releases) page documents certain existing limitations. If you encounter a WDL 1.0 interoperability problem not mentioned there, please file it via [Issues](https://github.com/chanzuckerberg/miniwdl/issues).
 
 ### `miniwdl cromwell`
 
