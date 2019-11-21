@@ -20,7 +20,10 @@ integration_tests:
 	python3 tests/no_docker_services.py
 
 skylab_bulk_rna:
-	prove -v tests/skylab_bulk_rna.t
+	prove -v tests/applied/skylab_bulk_rna.t
+
+encode_ataq_seq:
+	prove -v tests/applied/encode_atac_seq.t
 
 ci_housekeeping: sopretty check_check check doc
 

@@ -41,6 +41,8 @@ jobs:
     - env: CI_TARGET=ci_unit_tests
     - env: CI_TARGET=integration_tests
     - env: CI_TARGET=skylab_bulk_rna
+    - env: CI_TARGET=encode_atac_seq
   allow_failures:
     - env: CI_TARGET=skylab_bulk_rna
+    - env: CI_TARGET=encode_atac_seq
   fast_finish: true
