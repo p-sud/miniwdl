@@ -22,9 +22,6 @@ integration_tests:
 skylab_bulk_rna:
 	prove -v tests/applied/skylab_bulk_rna.t
 
-encode_atac_seq:
-	prove -v tests/applied/encode_atac_seq.t
-
 ci_housekeeping: sopretty check_check check doc
 
 ci_unit_tests: unit_tests
