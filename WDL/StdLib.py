@@ -75,6 +75,18 @@ class Base:
         def defined(v: Value.Base):
             return Value.Boolean(not isinstance(v, Value.Null))
 
+        @static([Type.Int()], Type.Int())
+        def factorial(v: Value.Int) -> Value.Int:
+            def f(n: int) -> int:
+                return 1 if n <= 1 else n * f(n - 1)
+
+            return Value.Int(f(v.value))
+
+        @static([Type.File()], Type.Int())
+        def word_count(v: Value.File) -> Value.Int:
+            with open(self._devirtualize_filename(v.value), "r") as infile:
+                return Value.Int(len(infile.read().split(" ")))
+
         # write_*
         static([Type.Array(Type.String())], Type.File(), "write_lines")(
             self._write(_serialize_lines)
@@ -118,6 +130,7 @@ class Base:
         self.cross = _Cross()
         self.flatten = _Flatten()
         self.transpose = _Transpose()
+        self.choose_random = _ChooseRandom()
 
     def _read(self, parse: Callable[[str], Value.Base]) -> Callable[[Value.File], Value.Base]:
         "generate read_* function implementation based on parse"
@@ -884,3 +897,29 @@ class _Prefix(EagerFunction):
             Type.String(),
             [Value.String(pfx + s.coerce(Type.String()).value) for s in arguments[1].value],
         )
+
+
+class _ChooseRandom(EagerFunction):
+    def infer_type(self, expr: "Expr.Apply") -> Type.Base:
+        if len(expr.arguments) not in [1, 2]:
+            raise Error.WrongArity(expr, 1)
+        arg0ty = expr.arguments[0].type
+        if not isinstance(arg0ty, Type.Array):
+            raise Error.StaticTypeMismatch(expr.arguments[0], Type.Array(Type.Any()), arg0ty)
+        if len(expr.arguments) == 1:
+            return arg0ty.item_type
+        arg1ty = expr.arguments[1].type
+        if not isinstance(arg1ty, Type.Array):
+            raise Error.StaticTypeMismatch(expr.arguments[1], Type.Array(Type.Any()), arg1ty)
+        return Type.Pair(arg0ty.item_type, arg1ty.item_type)
+
+    def _call_eager(self, expr: "Expr.Apply", arguments: List[Value.Base]) -> Value.Base:
+        import random
+
+        if not arguments[0].value or (len(arguments) > 1 and not arguments[1].value):
+            raise Error.RuntimeError("empty array passed to choose_random()")
+        item0 = random.choice(arguments[0].value)
+        if len(arguments) == 1:
+            return item0
+        item1 = random.choice(arguments[1].value)
+        return Value.Pair(item0.type, item1.type, (item0, item1))
