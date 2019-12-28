@@ -289,11 +289,11 @@ import_alias: "alias" CNAME "as" CNAME
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 workflow: "workflow" CNAME "{" workflow_element* "}"
-?workflow_element: input_decls | any_decl | call | scatter | conditional | workflow_outputs | meta_section
+?workflow_element: input_decls | any_decl | call | scatter | conditional | workflow_outputs | meta_section | assertion
 
 scatter: "scatter" "(" CNAME "in" expr ")" "{" inner_workflow_element* "}"
 conditional: "if" "(" expr ")" "{" inner_workflow_element* "}"
-?inner_workflow_element: any_decl | call | scatter | conditional
+?inner_workflow_element: any_decl | call | scatter | conditional | assertion
 
 call: "call" namespaced_ident call_body? -> call
     | "call" namespaced_ident "as" CNAME call_body? -> call_as
@@ -314,6 +314,7 @@ task: "task" CNAME "{" task_section* command task_section* "}"
              | meta_section
              | runtime_section
              | any_decl -> noninput_decl
+             | assertion -> noninput_decl
 
 tasks: task*
 
@@ -352,6 +353,8 @@ bound_decl: type CNAME "=" expr -> decl
 ?any_decl: unbound_decl | bound_decl
 
 struct: "struct" CNAME "{" unbound_decl* "}"
+
+assertion: "assert" expr
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // type
@@ -484,7 +487,7 @@ COMMENT: "#" /[^\r\n]*/ NEWLINE
 %ignore WS
 """
 keywords["development"] = set(
-    "Array Float Int Map None Pair String alias as call command else false if import input left meta object output parameter_meta right runtime scatter struct task then true workflow".split(
+    "Array Float Int Map None Pair String alias as assert call command else false if import input left meta object output parameter_meta right runtime scatter struct task then true workflow".split(
         " "
     )
 )

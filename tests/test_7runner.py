@@ -68,3 +68,48 @@ class TestDownload(RunnerTestCase):
         self._run(count, {"files": ["https://google.com/robots.txt", "https://raw.githubusercontent.com/chanzuckerberg/miniwdl/master/tests/alyssa_ben.txt"]})
         self._run(count, {"files": ["https://google.com/robots.txt", "https://raw.githubusercontent.com/chanzuckerberg/miniwdl/master/nonexistent12345.txt", "https://raw.githubusercontent.com/chanzuckerberg/miniwdl/master/tests/alyssa_ben.txt"]},
                   expected_exception=WDL.runtime.DownloadFailed)
+
+
+class TestAssert(RunnerTestCase):
+    task1 = R"""
+    version development
+    task div {
+        input {
+            Int numerator
+            Int denominator
+        }
+        assert denominator != 0
+        command {
+            expr ~{numerator} / ~{denominator}
+        }
+        output {
+            Int quotient = read_int(stdout())
+        }
+    }
+    """
+
+    def test_positive(self):
+        outputs = self._run(self.task1, {"numerator": 7, "denominator": 2})
+        self.assertEqual(outputs["quotient"], 3)
+
+    def test_negative(self):
+        self._run(self.task1, {"numerator": 7, "denominator": 0}, expected_exception=WDL.Error.RuntimeError)
+
+    wf1 = R"""
+    version development
+    workflow div {
+        input {
+            Int numerator
+            Int denominator
+        }
+        assert denominator != 0
+        output {
+            Int quotient = numerator / denominator
+        }
+    }
+    """
+
+    def test_workflow(self):
+        outputs = self._run(self.wf1, {"numerator": 7, "denominator": 2})
+        self.assertEqual(outputs["quotient"], 3)
+        self._run(self.wf1, {"numerator": 7, "denominator": 0}, expected_exception=WDL.Error.RuntimeError)
