@@ -1,0 +1,6 @@
+- id: miniwdl-check
+  name: miniwdl check
+  description: This hook runs miniwdl check on .wdl files.
+  entry: miniwdl check
+  language: python
+  files: \.wdl$
